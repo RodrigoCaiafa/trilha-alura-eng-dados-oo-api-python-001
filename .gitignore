@@ -1,0 +1,15 @@
+.venv/
+venv/
+ENV/
+env/
+.idea/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.ipynb_checkpoints/
+.ipython/
+.conda/
+conda-env/
+referencias.txt.txt
