@@ -1,4 +1,5 @@
-from excecoes.restaurante_exceptions import ErroCriacaoRestaurante
+from excecoes.restaurante_exceptions import ErroCriacaoRestaurante, ErroRemocaoRestaurante
+from modelos.restaurante import Restaurante
 
 
 class RestaurantesCredenciados:
@@ -31,13 +32,17 @@ class RestaurantesCredenciados:
 
         return id_validacao, nome_validacao, status_validacao
 
+    def criar_restaurante(self, id_restaurante: str, nome_restaurante: str, categoria_restaurante: str):
+        restaurante = Restaurante(id_restaurante, nome_restaurante, categoria_restaurante)
+        self._cadastrar_restaurante(restaurante)
+
     def listar_restaurantes(self, status=True):
         print(f'{'Nome do restaurante'.ljust(25)} | {'Categoria'.ljust(25)}|{'Status'}')
         for restaurante in self._relacao_restaurantes.values():
             if restaurante.ativo == status:
                 print(f'{restaurante.nome.ljust(25)} | {restaurante.categoria.ljust(25)} | {restaurante.ativo}')
 
-    def cadastrar_restaurante(self, restaurante):
+    def _cadastrar_restaurante(self, restaurante):
         id_validacao, nome_validacao, status_validacao = (
             self._valida_restaurante(restaurante.id_restaurante, restaurante.nome))
 
@@ -49,5 +54,15 @@ class RestaurantesCredenciados:
         else:
             raise ErroCriacaoRestaurante(f'Erro no cadastro: ID válido {id_validacao} Nome válido {nome_validacao}')
 
-    def remover_restaurante(self, nome_restaurante: str, id_restaurante = ""):
-        id_validacao, nome_validacao, status_validacao = self._valida_restaurante(id_restaurante, nome_restaurante)
+    def remover_restaurante(self, nome_restaurante: str, id_restaurante: str):
+        nome_restaurante = nome_restaurante.upper().strip()
+        id_restaurante = id_restaurante.strip()
+
+        id_busca, nome_busca, status = self._valida_restaurante(id_restaurante, nome_restaurante)
+        if not status:
+            self._relacao_restaurantes.pop(id_restaurante)
+            print(f'Restaurante: {nome_restaurante} removido com sucesso')
+        else:
+            raise ErroRemocaoRestaurante(f'Erro na remoção: ID válido {id_busca} Nome válido {nome_busca}')
+
+

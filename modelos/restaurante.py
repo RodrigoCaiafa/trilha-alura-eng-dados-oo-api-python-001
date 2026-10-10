@@ -1,13 +1,10 @@
-from modelos.restaurantes_credenciados import RestaurantesCredenciados
-
 class Restaurante:
     def __init__(self, id_restaurante: str,  nome: str,
-                 categoria: str, lista_restaurantes: RestaurantesCredenciados, ativo = True):
+                 categoria: str, ativo = True):
         self._id_restaurante = id_restaurante
         self._nome = nome.upper().strip()
         self._categoria = categoria.upper().strip()
         self._ativo = ativo
-        lista_restaurantes.cadastrar_restaurante(self)
 
 
     def __str__(self) -> str:

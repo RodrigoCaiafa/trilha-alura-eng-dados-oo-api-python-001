@@ -1,19 +1,24 @@
-from modelos.restaurante import Restaurante
 from modelos.restaurantes_credenciados import RestaurantesCredenciados
 from modelos.cardapio.bebida import Bebida
 from modelos.cardapio.prato import Prato
 
 def main():
     base_restaurantes = RestaurantesCredenciados()
-    restaurante_01 = Restaurante(id_restaurante='0000001',
-                                 nome= 'Restaurante do Zé',
-                                 categoria= 'comida brasileira',
-                                 lista_restaurantes= base_restaurantes)
+    restaurante_01 =  base_restaurantes.criar_restaurante(id_restaurante='0000001',
+                                 nome_restaurante= 'Restaurante do Zé',
+                                 categoria_restaurante= 'comida brasileira')
 
-    restaurante_02 = Restaurante(id_restaurante='0000002',
-                                 nome= 'Restaurante do Rio',
-                                 categoria= 'comida brasileira',
-                                 lista_restaurantes= base_restaurantes)
+    restaurante_02 = base_restaurantes.criar_restaurante(id_restaurante='0000002',
+                                 nome_restaurante= 'Restaurante do Rio',
+                                 categoria_restaurante= 'comida brasileira')
+
+    restaurante_03 = base_restaurantes.criar_restaurante(id_restaurante='0000003',
+                                 nome_restaurante= 'Japa Fast',
+                                 categoria_restaurante= 'comida japonesa')
+
+    base_restaurantes.listar_restaurantes()
+
+    base_restaurantes.remover_restaurante('Restaurante do Rio', '0000002')
 
     base_restaurantes.listar_restaurantes()
 
