@@ -42,6 +42,9 @@ class RestaurantesCredenciados:
             if restaurante.ativo == status:
                 print(f'{restaurante.nome.ljust(25)} | {restaurante.categoria.ljust(25)} | {restaurante.ativo}')
 
+    def buscar_restaurante(self, id_restaurante: str) -> Restaurante | None:
+        return self._relacao_restaurantes.get(id_restaurante)
+
     def _cadastrar_restaurante(self, restaurante):
         id_validacao, nome_validacao, status_validacao = (
             self._valida_restaurante(restaurante.id_restaurante, restaurante.nome))
@@ -50,6 +53,7 @@ class RestaurantesCredenciados:
             self._relacao_restaurantes[restaurante.id_restaurante] = restaurante
             self._set_ids_restaurantes.add(restaurante.id_restaurante)
             self._set_nomes_restaurantes.add(restaurante.nome)
+
             print(f'Cadastro efetuado com sucesso: {restaurante}')
         else:
             raise ErroCriacaoRestaurante(f'Erro no cadastro: ID válido {id_validacao} Nome válido {nome_validacao}')
@@ -61,8 +65,9 @@ class RestaurantesCredenciados:
         id_busca, nome_busca, status = self._valida_restaurante(id_restaurante, nome_restaurante)
         if not status:
             self._relacao_restaurantes.pop(id_restaurante)
+            self._set_ids_restaurantes.discard(id_restaurante)
+            self._set_nomes_restaurantes.discard(nome_restaurante)
+
             print(f'Restaurante: {nome_restaurante} removido com sucesso')
         else:
             raise ErroRemocaoRestaurante(f'Erro na remoção: ID válido {id_busca} Nome válido {nome_busca}')
-
-

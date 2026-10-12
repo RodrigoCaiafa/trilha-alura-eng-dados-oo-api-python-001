@@ -1,6 +1,6 @@
-from prato import Prato
-from bebida import Bebida
-from item_cardapio import ItemCardapio
+from modelos.cardapio.prato import Prato
+from modelos.cardapio.bebida import Bebida
+from modelos.cardapio.item_cardapio import ItemCardapio
 from excecoes.cardapio_exceptions import ErroCadastroProduto
 
 
