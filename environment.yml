@@ -1,0 +1,9 @@
+name: python_api_alura_curso_1
+channels:
+  - defaults
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
+dependencies:
+  - python
+  - requests
+prefix: /opt/anaconda3/envs/python_api_alura_curso_1

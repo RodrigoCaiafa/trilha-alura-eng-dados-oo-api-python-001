@@ -7,6 +7,10 @@ class ItemCardapio(ABC):
         self._nome = nome
         self._preco = preco
 
+    @abstractmethod
+    def aplicar_desconto(self, desconto: float | int):
+        pass
+
     @property
     def id_produto(self):
         return self._id_produto

@@ -1,3 +1,5 @@
+from typing import override
+
 from modelos.cardapio.item_cardapio import ItemCardapio
 
 class Bebida(ItemCardapio):
@@ -13,8 +15,13 @@ class Bebida(ItemCardapio):
         \nBebida: {self.nome}\
         \nTipo: {self.tipo_bebida}\
         \nTamanho: {self.tamanho}\
-        \nPreço: {self.preco}\
+        \nPreço: R${self.preco}\
         ')
+
+    @override
+    def aplicar_desconto(self, desconto = 0.3):
+        if 0 < desconto <= 1:
+            print(f'Valor liquido {self.nome} R${self.preco - (self.preco * desconto)}\nDesconto {100 * desconto}%')
 
     @property
     def tipo_bebida(self) -> str:
@@ -23,3 +30,12 @@ class Bebida(ItemCardapio):
     @property
     def tamanho(self) -> str:
         return self._tamanho
+
+    @property
+    def preco(self) -> float:
+        return self._preco
+
+    @preco.setter
+    def preco(self, preco: float):
+        if preco > 0:
+            self._preco = preco

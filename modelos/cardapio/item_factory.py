@@ -2,12 +2,14 @@ from modelos.cardapio.prato import Prato
 from modelos.cardapio.bebida import Bebida
 from modelos.cardapio.item_cardapio import ItemCardapio
 from excecoes.cardapio_exceptions import ErroCadastroProduto
+from modelos.cardapio.sobremesa import Sobremesa
 
 
 class ProdutoFactory:
     _produto_factory = {
-        "prato": Prato,
-        "bebida": Bebida
+        'prato': Prato,
+        'bebida': Bebida,
+        'sobremesa': Sobremesa
     }
 
     @classmethod

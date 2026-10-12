@@ -35,6 +35,7 @@ def main():
 
     bebida_refri = ['0000001', 'CocaCola', 'Refrigerante', '500ml', 15.0]
     prato_hamburguer = ['0000002', 'Hamburguer', 'Sanduiches', 10.0]
+    sobremesa_pudim = ['0000003', 'Pudim de leite', 'Sobremesas', 'fatia', 'Sobremesa gelada', 8.0]
 
     cardapio_do_ze = base_restaurantes \
         .buscar_restaurante(id_restaurante='0000001') \
@@ -42,11 +43,17 @@ def main():
 
     cardapio_do_ze.criar_produto('bebida', *bebida_refri)
     cardapio_do_ze.criar_produto('prato', *prato_hamburguer)
+    cardapio_do_ze.criar_produto('sobremesa', *sobremesa_pudim)
 
     #print(cardapio_do_ze._relacao_produtos['0000001'])
 
     for _, produto in cardapio_do_ze._relacao_produtos.items():
         print(produto)
+
+    cardapio_do_ze.buscar_produto('0000001').aplicar_desconto()
+    cardapio_do_ze.buscar_produto('0000002').aplicar_desconto()
+    cardapio_do_ze.buscar_produto('0000003').aplicar_desconto()
+
 
 
 if __name__ == '__main__':
