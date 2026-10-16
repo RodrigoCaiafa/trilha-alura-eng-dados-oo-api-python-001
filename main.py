@@ -1,9 +1,15 @@
+from pprint import pprint
 from modelos.restaurantes_credenciados import RestaurantesCredenciados
 from modelos.cardapio.bebida import Bebida
 from modelos.cardapio.prato import Prato
+from constantes import *
+from dotenv import load_dotenv
+from collections import defaultdict
+import os
+import requests
 
 
-def main():
+def introducao_aula():
     base_restaurantes = RestaurantesCredenciados()
     base_restaurantes.criar_restaurante(id_restaurante='0000001',
                                         nome_restaurante='Restaurante do Zé',
@@ -53,6 +59,26 @@ def main():
     cardapio_do_ze.buscar_produto('0000001').aplicar_desconto()
     cardapio_do_ze.buscar_produto('0000002').aplicar_desconto()
     cardapio_do_ze.buscar_produto('0000003').aplicar_desconto()
+
+def main():
+
+    #introducao_aula()
+    load_dotenv()
+    API_RESTAURANTE_URL = os.getenv('API_RESTAURANTE_URL')
+
+    print(requests.get(f'{API_RESTAURANTE_URL}{CARDAPIO_ENDPOINT}'))
+    response = requests.get(f'{API_RESTAURANTE_URL}{CARDAPIO_ENDPOINT}')
+
+    get_cardapio = response.json() if response.status_code == 200 else f'Erro na requisição: {response.status_code}'
+    #pprint(get_cardapio)
+
+    restaurantes = defaultdict(list)
+
+    for item in get_cardapio:
+        restaurantes[item['Company']].append({'item' : item['Item']})
+
+    pprint(restaurantes)
+
 
 
 

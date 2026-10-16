@@ -1,0 +1,1 @@
+CARDAPIO_ENDPOINT = '/restaurantes.json'

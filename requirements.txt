@@ -21,6 +21,7 @@ pip=26.2.1=pyh0d26453_0
 pycparser=3.0=py314hca03da5_0
 pysocks=1.7.1=py314hca03da5_2
 python=3.14.8=hedc06ab_101_cp314
+python-dotenv=1.2.2=py314hca03da5_0
 python_abi=3.14=5_cp314
 readline=8.3=h0b18652_0
 requests=2.34.2=py314hca03da5_1

@@ -6,4 +6,5 @@ channels:
 dependencies:
   - python
   - requests
+  - python-dotenv
 prefix: /opt/anaconda3/envs/python_api_alura_curso_1
