@@ -1,86 +1,68 @@
-from pprint import pprint
-from modelos.restaurantes_credenciados import RestaurantesCredenciados
-from modelos.cardapio.bebida import Bebida
-from modelos.cardapio.prato import Prato
-from constantes import *
+
 from dotenv import load_dotenv
+from fastapi import FastAPI, Query
+from fastapi.responses import JSONResponse
+from constantes import *
 from collections import defaultdict
-import os
 import requests
+import os
 
+app = FastAPI()
 
-def introducao_aula():
-    base_restaurantes = RestaurantesCredenciados()
-    base_restaurantes.criar_restaurante(id_restaurante='0000001',
-                                        nome_restaurante='Restaurante do Zé',
-                                        categoria_restaurante='comida brasileira')
-
-    base_restaurantes.criar_restaurante(id_restaurante='0000002',
-                                        nome_restaurante='Restaurante do Rio',
-                                        categoria_restaurante='comida brasileira')
-
-    base_restaurantes.criar_restaurante(id_restaurante='0000003',
-                                        nome_restaurante='Japa Fast',
-                                        categoria_restaurante='comida japonesa')
-
-    base_restaurantes.listar_restaurantes()
-
-    base_restaurantes.remover_restaurante('Restaurante do Rio', '0000002')
-
-    base_restaurantes.listar_restaurantes()
-
-    bebida_refri = Bebida(id_produto='0000001',
-                          nome='CocaCola',
-                          tipo_bebida='Refrigerante',
-                          tamanho='500ml',
-                          preco=15.0)
-    prato_hamburguer = Prato(id_prato='0000002',
-                             nome='Hamburguer',
-                             tipo_prato='Sanduiches',
-                             preco=10.0)
-
-    bebida_refri = ['0000001', 'CocaCola', 'Refrigerante', '500ml', 15.0]
-    prato_hamburguer = ['0000002', 'Hamburguer', 'Sanduiches', 10.0]
-    sobremesa_pudim = ['0000003', 'Pudim de leite', 'Sobremesas', 'fatia', 'Sobremesa gelada', 8.0]
-
-    cardapio_do_ze = base_restaurantes \
-        .buscar_restaurante(id_restaurante='0000001') \
-        .cardapio_restaurante
-
-    cardapio_do_ze.criar_produto('bebida', *bebida_refri)
-    cardapio_do_ze.criar_produto('prato', *prato_hamburguer)
-    cardapio_do_ze.criar_produto('sobremesa', *sobremesa_pudim)
-
-    #print(cardapio_do_ze._relacao_produtos['0000001'])
-
-    for _, produto in cardapio_do_ze._relacao_produtos.items():
-        print(produto)
-
-    cardapio_do_ze.buscar_produto('0000001').aplicar_desconto()
-    cardapio_do_ze.buscar_produto('0000002').aplicar_desconto()
-    cardapio_do_ze.buscar_produto('0000003').aplicar_desconto()
-
-def main():
-
-    #introducao_aula()
+def _load_base_api(api_base: str) -> str | None:
     load_dotenv()
-    API_RESTAURANTE_URL = os.getenv('API_RESTAURANTE_URL')
+    API_BASE = os.getenv(api_base)
+    return API_BASE
 
-    print(requests.get(f'{API_RESTAURANTE_URL}{CARDAPIO_ENDPOINT}'))
-    response = requests.get(f'{API_RESTAURANTE_URL}{CARDAPIO_ENDPOINT}')
+def _response_api(base_api: str, end_point: str) -> requests.Response:
+    response = requests.get(f'{base_api}{end_point}')
+    return response
 
-    get_cardapio = response.json() if response.status_code == 200 else f'Erro na requisição: {response.status_code}'
-    #pprint(get_cardapio)
+def _verif_config_api(base_api: str, end_point: str) -> str:
+    if not isinstance(base_api, str) or not isinstance(end_point, str):
+        raise TypeError('Endereços precisam ser strings')
+    if not base_api.strip() or not end_point.strip():
+        raise TypeError('Endereços não podem ser vazios')
+    return f'{base_api}{end_point}'
 
-    restaurantes = defaultdict(list)
+def _json_response_api(obj: dict | list, type_content = 'application/json', encoding = 'utf-8'):
+    return JSONResponse(content=obj,
+                        headers={"Content-Type": f'{type_content}; charset={encoding}'})
 
-    for item in get_cardapio:
-        restaurantes[item['Company']].append({'item' : item['Item']})
+@app.get('/api/hello')
+def get_hello_world() -> dict:
+    '''
+    Endpoint de boas vindas ao mundo API
+    :return: dict
+    '''
+    return {'Hello': 'World'}
 
-    pprint(restaurantes)
+@app.get('/api/restaurantes/')
+def get_restaurantes(restaurante: str = Query(None)):
+    '''
+    Endpoint de busca dos cardapios de restaurantes
+    :param restaurante: str -> Nome do restaurante a localizar
+    :return: None
+    '''
+
+    BASE_API = _load_base_api('API_RESTAURANTE_URL')
+    URL = _verif_config_api(BASE_API, CARDAPIO_ENDPOINT)
+    response = requests.get(URL)
+
+    get_response = response.json() if response.status_code == 200 else {'NÁO ENCONTRADO':None}
+
+    if restaurante is None:
+        return _json_response_api(obj=get_response)
+
+    busca_restaurante = defaultdict(list)
+
+    for item in get_response:
+        if item.get('Company') == restaurante:
+            busca_restaurante[item.get(restaurante)].append(
+                {'nome': item.get('Item'),
+                 'descricao': item.get('description'),
+                 'preco': item.get('price')})
+
+    return _json_response_api(obj={'Restaurante': restaurante, 'Cardápio': busca_restaurante})
 
 
-
-
-if __name__ == '__main__':
-    main()

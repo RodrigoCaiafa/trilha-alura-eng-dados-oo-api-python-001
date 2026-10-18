@@ -7,4 +7,5 @@ dependencies:
   - python
   - requests
   - python-dotenv
+  - fastapi
 prefix: /opt/anaconda3/envs/python_api_alura_curso_1
